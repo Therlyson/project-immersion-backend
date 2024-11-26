@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { listPosts, createNewPost, uploadImage} from "../controller/postsController.js";
+import { listPosts, createNewPost, uploadImage, updatePost} from "../controller/postsController.js";
 
 const storage = multer.diskStorage({ //código pronto para o multer funcionar no windows, lembrar de criar a pasta uploads tbm
     destination: function (req, file, cb) {
@@ -21,6 +21,8 @@ const routes = (app) => {
     app.post('/posts', createNewPost);
 
     app.post('/upload', upload.single("imagem"), uploadImage);
+
+    app.put('/posts/:id', updatePost);
 };
 
 export default routes;

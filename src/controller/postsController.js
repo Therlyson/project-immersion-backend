@@ -1,5 +1,6 @@
-import {getEveryPosts, createPost} from "../models/postsModel.js";
+import {getEveryPosts, createPost, update} from "../models/postsModel.js";
 import fs from "fs";
+import gerarDescricaoComGemini from "../service/geminiService.js";
 
 export async function listPosts(req, res) {
     const posts = await getEveryPosts();
@@ -31,6 +32,28 @@ export async function uploadImage(req, res) {
         res.status(201).json(post);
     }catch(err){
         console.log(err.message);
-        res.status(500).json({message: "Erro ao inserir o post"});
+        res.status(500).json({message: "Erro ao fazer upload da imagem"});
     }
 }
+
+export async function updatePost(req, res) {
+    const id = req.params.id;
+    const urlImage = `http://localhost:3000/${id}.png`;
+
+    try{
+        const imgBuffer = fs.readFileSync(`uploads/${id}.png`);
+        const descriptionGemini = await gerarDescricaoComGemini(imgBuffer);
+        const post = {
+            imgUrl: urlImage,
+            description: descriptionGemini,
+            alt: req.body.alt
+        }
+
+        const updatedPost = await update(id, post);
+        res.status(200).json(updatedPost);
+    }catch(err){
+        console.log(err.message);
+        res.status(500).json({message: "Erro ao atualizar o post"});
+    }
+}
+    
