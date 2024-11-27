@@ -1,6 +1,12 @@
 import express from "express";
 import multer from "multer";
-import { listPosts, createNewPost, uploadImage, updatePost} from "../controller/postsController.js";
+import { listPosts, createNewPost, uploadImage, updatePost, findPostId} from "../controller/postsController.js";
+import cors from "cors";
+
+const corsOptions = {
+    origin: "http://localhost:8000",
+    optionsSuccessStatus: 200
+}
 
 const storage = multer.diskStorage({ //código pronto para o multer funcionar no windows, lembrar de criar a pasta uploads tbm
     destination: function (req, file, cb) {
@@ -15,8 +21,11 @@ const upload = multer({ dest: "./uploads", storage });
 
 const routes = (app) => {
     app.use(express.json()); //entender e converter estrutura em json
+    app.use(cors(corsOptions));
 
     app.get('/posts', listPosts);
+
+    app.get('/posts/:id', findPostId);
 
     app.post('/posts', createNewPost);
 

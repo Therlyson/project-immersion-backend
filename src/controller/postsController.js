@@ -1,10 +1,15 @@
-import {getEveryPosts, createPost, update} from "../models/postsModel.js";
+import {getEveryPosts, createPost, update, getPostId} from "../models/postsModel.js";
 import fs from "fs";
 import gerarDescricaoComGemini from "../service/geminiService.js";
 
 export async function listPosts(req, res) {
     const posts = await getEveryPosts();
     res.status(200).json(posts);
+}
+
+export async function findPostId(req, res) {
+    const post = await getPostId(req.params.id);
+    res.status(200).json(post);
 }
 
 export async function createNewPost(req, res) {
